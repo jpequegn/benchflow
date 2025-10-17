@@ -1,0 +1,18 @@
+   Compiling benchmark v0.1.0 (/path/to/project)
+warning: unused variable: `x`
+ --> src/lib.rs:10:9
+  |
+10 |     let x = 5;
+   |         ^ help: if this is intentional, prefix it with an underscore: `_x`
+  |
+  = note: `#[warn(unused_variables)]` on by default
+
+    Finished bench [optimized] target(s) in 2.34s
+     Running unittests src/lib.rs (target/release/deps/benchmark-1234567890abcdef)
+
+running 3 tests
+test bench_fast_operation  ... bench:      42 ns/iter (+/- 3)
+test bench_slow_operation  ... bench:  10,500 ns/iter (+/- 234)
+test bench_medium_op       ... bench:   1,234 ns/iter (+/- 89)
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out

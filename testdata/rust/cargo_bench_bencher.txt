@@ -1,0 +1,8 @@
+running 5 tests
+test bench_bubble_sort ... bench:   1,234 ns/iter (+/- 56)
+test bench_quick_sort  ... bench:     567 ns/iter (+/- 23)
+test bench_merge_sort  ... bench:     890 ns/iter (+/- 45)
+test bench_heap_sort   ... bench:   1,100 ns/iter (+/- 78)
+test bench_insertion   ... bench:   2,345 ns/iter (+/- 123)
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
