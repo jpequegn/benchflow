@@ -1,0 +1,59 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# Dependency directories
+vendor/
+
+# Build output
+bin/
+dist/
+benchflow
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Benchmark results and reports
+*.db
+*.sqlite
+*.sqlite3
+reports/
+benchmark_results.txt
+target/criterion/
+
+# Configuration files with secrets (keep examples)
+config.local.yaml
+config.local.toml
+*.secret.yaml
+*.secret.toml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Coverage
+coverage.out
+coverage.html
+*.coverprofile

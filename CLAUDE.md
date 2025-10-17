@@ -1,0 +1,236 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Benchflow is a cross-language benchmark aggregator with parallel execution and visualization. It's built in Go to leverage goroutines for concurrent benchmark runs across multiple languages (Rust, Python, Go, Node.js).
+
+**Current Status**: Early planning phase - foundation infrastructure not yet implemented. Focus on Phase 1 completion before moving to parser/execution logic.
+
+## Development Commands
+
+### Build & Run
+```bash
+# Build the CLI
+go build -o benchflow ./cmd/benchflow
+
+# Run with go run (during development)
+go run ./cmd/benchflow [args]
+
+# Install locally
+go install ./cmd/benchflow
+```
+
+### Testing
+```bash
+# Run all tests
+go test ./...
+
+# Run tests with coverage
+go test -cover ./...
+
+# Run specific package tests
+go test ./internal/parser
+go test ./internal/executor
+
+# Run single test
+go test ./internal/parser -run TestParseBencher
+
+# Verbose output
+go test -v ./...
+```
+
+### Code Quality
+```bash
+# Format code
+go fmt ./...
+
+# Lint (requires golangci-lint)
+golangci-lint run
+
+# Vet
+go vet ./...
+
+# Run all quality checks
+go fmt ./... && go vet ./... && go test ./...
+```
+
+## Architecture
+
+Benchflow follows Go's standard project layout with clear separation of concerns:
+
+### Core Pipeline Flow
+```
+User Config (YAML)
+    ↓
+CLI (cmd/benchflow) - Entry point, command routing
+    ↓
+Executor (internal/executor) - Concurrent benchmark execution via goroutines
+    ↓
+Parser (internal/parser) - Language-specific output parsing
+    ↓
+Aggregator (internal/aggregator) - Normalize results, calculate statistics
+    ↓
+Storage (internal/storage) - Historical tracking (SQLite)
+    ↓
+Reporter (internal/reporter) - Generate HTML/JSON/CSV output
+```
+
+### Package Responsibilities
+
+**`cmd/benchflow/`** - CLI entry point
+- Framework: cobra or urfave-cli (TBD in Phase 1)
+- Commands: `run`, `compare`, `report`
+- Configuration loading via viper (YAML/TOML)
+
+**`internal/parser/`** - Multi-language benchmark parsers
+- Rust: cargo bench bencher format + criterion
+- Python: pytest-benchmark JSON
+- Go: testing.B output
+- Interface-based design for extensibility
+- See Phase 2 issue for Rust parser details
+
+**`internal/executor/`** - Concurrent execution engine
+- Worker pool pattern with goroutines
+- Context-based timeout/cancellation
+- Process spawning via os/exec
+- Real-time output streaming to parser
+- Error handling and retry logic
+- Reference: https://github.com/jpequegn/parakeet-podcast-processor parallel transcription
+
+**`internal/aggregator/`** - Result normalization
+- Unified result format across languages
+- Statistical calculations (mean, median, std dev)
+- Comparison logic for baseline vs current
+- Regression detection with configurable thresholds
+
+**`internal/storage/`** - Historical tracking
+- SQLite for persistence
+- Time-series benchmark data
+- Query interface for trend analysis
+
+**`internal/reporter/`** - Output generation
+- HTML reports with html/template + Chart.js
+- Dark mode support (Nebula UI style)
+- Self-contained output (embedded CSS/JS via embed package)
+- JSON/CSV export for CI/CD integration
+
+**`pkg/benchflow/`** - Public API
+- Stable interfaces for external consumption
+- Versioned according to semantic versioning
+
+**`testdata/`** - Test fixtures
+- Sample benchmark outputs for each language
+- Edge case data for parser validation
+
+**`examples/`** - Configuration examples
+- Sample benchflow.yaml files
+- Multi-language benchmark setups
+
+## Implementation Phases
+
+Work proceeds sequentially through 6 phases (tracked in GitHub Issues):
+
+1. **Foundation** (#1) - CLI framework, config, logging, tests, CI/CD
+2. **Rust Parser** (#2) - Bencher/criterion format parsing
+3. **Execution Engine** (#3) - Goroutine-based parallel execution
+4. **Aggregation** (#4) - Result normalization, statistics, SQLite storage
+5. **HTML Reports** (#5) - Template-based visualization with Chart.js
+6. **Multi-language** (#6) - Python and Go benchmark support
+
+**Current Priority**: Complete Phase 1 foundation before proceeding.
+
+## Key Design Patterns
+
+### Interface-Based Parsers
+Each language parser implements a common interface:
+```go
+type Parser interface {
+    Parse(output io.Reader) (*BenchmarkResult, error)
+}
+```
+
+### Worker Pool Execution
+Executor uses goroutines + channels for concurrent benchmark runs:
+- Worker pool with configurable concurrency
+- Context for timeout/cancellation propagation
+- Channel-based result collection
+
+### Unified Result Format
+All parsers normalize to a common struct for aggregation:
+```go
+type BenchmarkResult struct {
+    Name       string
+    Language   string
+    Time       Duration
+    Iterations int
+    StdDev     Duration
+    // ... additional metrics
+}
+```
+
+## Configuration
+
+Benchflow uses YAML configuration files (via viper):
+
+```yaml
+benchmarks:
+  - name: "rust-sort"
+    language: rust
+    command: "cargo bench --bench sort"
+    timeout: 5m
+
+  - name: "python-search"
+    language: python
+    command: "pytest --benchmark-only"
+    timeout: 3m
+
+output:
+  formats: [html, json, csv]
+  directory: ./reports
+
+storage:
+  enabled: true
+  path: ./benchflow.db
+```
+
+## Testing Strategy
+
+- **Unit tests**: All parsers, aggregators, reporters (80%+ coverage goal)
+- **Integration tests**: Full pipeline with testdata fixtures
+- **Table-driven tests**: Go idiom for multiple test cases
+- **Golden files**: Expected output comparisons for reporters
+- **CI/CD**: GitHub Actions runs tests on every PR
+
+## Future CLI Usage
+
+```bash
+# Run all benchmarks from config
+benchflow run --config benchflow.yaml
+
+# Compare against baseline
+benchflow compare --baseline v1.0.0 --current HEAD
+
+# Generate HTML report
+benchflow report --format html --output report.html
+
+# Run specific benchmark
+benchflow run --name rust-sort
+```
+
+## Related Projects
+
+- **Parakeet Podcast Processor**: Reference for parallel execution patterns
+  - Path: `/Users/julienpequegnot/Code/parakeet-podcast-processor`
+  - See: `p3 transcribe` for goroutine-based concurrent processing
+  - Similar worker pool + error handling approach
+
+## Dependencies (Planned)
+
+- **CLI**: cobra or urfave-cli
+- **Config**: spf13/viper
+- **Logging**: log/slog (Go 1.21+ stdlib)
+- **Database**: mattn/go-sqlite3
+- **Testing**: stretchr/testify (assertions)
+- **Web**: stdlib html/template, Chart.js (embedded)

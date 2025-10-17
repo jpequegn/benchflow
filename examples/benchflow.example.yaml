@@ -1,0 +1,52 @@
+# Benchflow Configuration Example
+
+# Benchmark definitions
+benchmarks:
+  - name: "rust-sort-algorithms"
+    language: rust
+    command: "cargo bench --bench sort"
+    workdir: "./rust-examples"
+    timeout: 5m
+
+  - name: "python-data-processing"
+    language: python
+    command: "pytest --benchmark-only tests/bench_*.py"
+    workdir: "./python-examples"
+    timeout: 3m
+
+  - name: "go-web-server"
+    language: go
+    command: "go test -bench=. -benchmem ./..."
+    workdir: "./go-examples"
+    timeout: 2m
+
+# Execution settings
+execution:
+  parallel: 4          # Number of parallel benchmark executions
+  retry: 3             # Number of retries on failure
+  failfast: false      # Stop on first failure
+
+# Output configuration
+output:
+  formats:
+    - html
+    - json
+    - csv
+  directory: ./reports
+  timestamp: true      # Add timestamp to output files
+
+# Historical tracking
+storage:
+  enabled: true
+  path: ./benchflow.db
+  retention_days: 90   # Keep results for 90 days
+
+# Comparison settings
+comparison:
+  baseline: "HEAD~1"   # Git reference for baseline
+  threshold: 1.05      # Regression threshold (5% slower)
+  alert_on_regression: true
+
+# Logging
+verbose: false
+log_file: ./benchflow.log
