@@ -32,6 +32,6 @@ func init() {
 	compareCmd.Flags().StringP("current", "c", "", "current benchmark results (required)")
 	compareCmd.Flags().Float64P("threshold", "t", 1.05, "regression threshold (1.05 = 5% slower)")
 
-	compareCmd.MarkFlagRequired("baseline")
-	compareCmd.MarkFlagRequired("current")
+	_ = compareCmd.MarkFlagRequired("baseline")
+	_ = compareCmd.MarkFlagRequired("current")
 }

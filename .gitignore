@@ -20,7 +20,7 @@ vendor/
 # Build output
 bin/
 dist/
-benchflow
+/benchflow
 
 # IDE and editor files
 .vscode/

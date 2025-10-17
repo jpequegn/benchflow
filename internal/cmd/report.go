@@ -32,5 +32,5 @@ func init() {
 	reportCmd.Flags().StringP("output", "o", "", "output file path (required)")
 	reportCmd.Flags().StringP("input", "i", "", "input benchmark results file")
 
-	reportCmd.MarkFlagRequired("output")
+	_ = reportCmd.MarkFlagRequired("output")
 }
