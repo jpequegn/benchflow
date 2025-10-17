@@ -1,7 +1,7 @@
 # Benchflow
 
 [![CI](https://github.com/jpequegn/benchflow/actions/workflows/ci.yml/badge.svg)](https://github.com/jpequegn/benchflow/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/jpequegn/benchflow)](https://goreportcard.com/report/github.com/jpequegn/benchflow)
+[![Go Reference](https://pkg.go.dev/badge/github.com/jpequegn/benchflow.svg)](https://pkg.go.dev/github.com/jpequegn/benchflow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/jpequegn/benchflow)](https://github.com/jpequegn/benchflow)
 
