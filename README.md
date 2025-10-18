@@ -168,6 +168,14 @@ go fmt ./... && go vet ./... && go test ./... && go build ./cmd/benchflow
 - ✅ Auto-detection of benchmark type
 - ✅ Comprehensive test suites for both parsers
 
+### ✅ Phase 7: Node.js Benchmark Parser (Complete)
+- ✅ Benchmark.js text format parser
+- ✅ Regex-based parsing (ops/sec to time conversion)
+- ✅ Margin of error and sample count extraction
+- ✅ Throughput metrics and standard deviation approximation
+- ✅ Comprehensive test suite (81.2% coverage)
+- ✅ Integration with executor and full pipeline
+
 ## Technology Stack
 
 - **Language**: Go 1.24
@@ -188,7 +196,7 @@ benchflow/
 │   └── benchflow/          # CLI entry point (main.go)
 ├── internal/
 │   ├── cmd/                # CLI commands (cobra)
-│   ├── parser/             # Multi-language benchmark parsers (Rust, Python, Go)
+│   ├── parser/             # Multi-language benchmark parsers (Rust, Python, Go, Node.js)
 │   ├── executor/           # Concurrent execution engine with goroutines
 │   ├── aggregator/         # Result aggregation and statistics
 │   ├── reporter/           # HTML/JSON/CSV report generation
@@ -199,7 +207,8 @@ benchflow/
 ├── testdata/               # Test fixtures
 │   ├── rust/              # Rust benchmark samples
 │   ├── python/            # Python benchmark samples
-│   └── go/                # Go benchmark samples
+│   ├── go/                # Go benchmark samples
+│   └── nodejs/            # Node.js benchmark samples
 ├── .github/
 │   └── workflows/          # CI/CD workflows
 └── CLAUDE.md              # Development documentation
@@ -226,6 +235,13 @@ benchflow/
 - Extracts memory allocations (B/op, allocs/op)
 - Supports both simple and detailed output formats
 - Handles compiler optimizations gracefully
+
+**Node.js** - Benchmark.js text format (81.2% coverage)
+- Parses Benchmark.js output: `name x ops/sec ±percentage% (runs sampled)`
+- Converts throughput (ops/sec) to time-based metrics
+- Extracts margin of error and sample count
+- Approximates standard deviation from margin of error
+- Handles special characters in benchmark names
 
 ### Parser Interface
 
@@ -261,6 +277,11 @@ benchmarks:
     command: "pytest --benchmark-only"
     timeout: 3m
 
+  - name: "nodejs-algorithms"
+    language: nodejs
+    command: "npm run benchmark"
+    timeout: 2m
+
 execution:
   parallel: 4
   retry: 3
@@ -283,7 +304,7 @@ Contributions welcome! Please see:
 
 ## Development Status
 
-**All Phases Complete** ✅
+**All 7 Phases Complete** ✅
 
 - ✅ Phase 1: Project Foundation & Setup
 - ✅ Phase 2: Rust Benchmark Parser
@@ -291,8 +312,9 @@ Contributions welcome! Please see:
 - ✅ Phase 4: Result Aggregation & Storage
 - ✅ Phase 5: HTML Report Generation
 - ✅ Phase 6: Multi-language Support (Python & Go)
+- ✅ Phase 7: Node.js Benchmark Parser (Benchmark.js)
 
-**Next Steps**: Node.js support, performance optimizations, or additional enhancements
+**Next Steps**: Performance optimizations, additional language support (TypeScript, etc.), dashboard enhancements, or community features
 
 See [GitHub Issues](https://github.com/jpequegn/benchflow/issues) for roadmap and feature requests.
 

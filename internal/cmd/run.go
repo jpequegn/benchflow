@@ -54,6 +54,7 @@ func runBenchmarks(cmd *cobra.Command, args []string) error {
 	registry.RegisterParser("rust", parser.NewRustParser())
 	registry.RegisterParser("python", parser.NewPythonParser())
 	registry.RegisterParser("go", parser.NewGoParser())
+	registry.RegisterParser("nodejs", parser.NewNodeJSParser())
 
 	// Create execution config
 	execConfig := &executor.ExecutionConfig{
