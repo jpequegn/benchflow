@@ -10,11 +10,11 @@
 // Currently supported benchmark formats:
 //
 //   - Rust: cargo bench bencher format
+//   - Python: pytest-benchmark JSON
 //
 // Planned support:
 //
 //   - Rust: criterion format
-//   - Python: pytest-benchmark JSON
 //   - Go: testing.B output
 //
 // # Usage
@@ -105,11 +105,51 @@
 //   - Failed tests: test bench_failed ... FAILED (skipped)
 //   - Ignored tests: test bench_ignored ... ignored (skipped)
 //
+// # Python Parser Specifics
+//
+// The Python parser supports pytest-benchmark JSON output format:
+//
+// Expected format (from pytest-benchmark --json-report):
+//
+//	{
+//	  "benchmarks": [
+//	    {
+//	      "name": "test_sort",
+//	      "fullname": "tests/test_perf.py::test_sort",
+//	      "stats": {
+//	        "min": 0.0001234,
+//	        "max": 0.0005678,
+//	        "mean": 0.0002456,
+//	        "stddev": 0.0000123,
+//	        "rounds": 100,
+//	        "median": 0.0002400,
+//	        "ops": 4071.66
+//	      }
+//	    }
+//	  ],
+//	  "datetime": "2025-10-18T14:30:00",
+//	  "version": "4.0.1"
+//	}
+//
+// Features:
+//   - Parses JSON format with automatic deserialization
+//   - Converts times from seconds to nanoseconds
+//   - Extracts benchmark name, mean time, standard deviation, iterations (rounds)
+//   - Captures throughput metrics (ops per second)
+//   - Stores quartile data and IQR in metadata
+//   - Handles suite-level metadata (datetime, version)
+//
+// Edge cases handled:
+//   - Zero-time benchmarks: mean: 0.0
+//   - Large time values: mean in seconds converted to nanoseconds
+//   - Missing stats field: skipped gracefully
+//   - Partial stats: skipped if key metrics missing
+//   - Zero throughput: skipped if ops not present
+//
 // # Future Extensions
 //
 // Planned additions:
 //   - Criterion format parser with histogram data
-//   - Python pytest-benchmark JSON parser
 //   - Go testing.B output parser
 //   - Custom format support via configuration
 package parser

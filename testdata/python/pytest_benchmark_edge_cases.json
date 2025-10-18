@@ -1,0 +1,69 @@
+{
+  "machine_info": {
+    "host": "test-host",
+    "python": "3.11.6",
+    "implementation": "CPython",
+    "processor": "arm64",
+    "machine": "Darwin",
+    "system": "Darwin",
+    "release": "24.0.0"
+  },
+  "benchmarks": [
+    {
+      "name": "test_large_numbers",
+      "fullname": "tests/test_edge_cases.py::test_large_numbers",
+      "params": null,
+      "group": null,
+      "extra_info": "",
+      "options": {
+        "disable_gc": false,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.001234567,
+        "max": 0.005678901,
+        "mean": 0.003456789,
+        "stddev": 0.001234567,
+        "rounds": 10,
+        "median": 0.0034,
+        "iqr": 0.0005,
+        "q1": 0.003,
+        "q3": 0.0035,
+        "iqr_outliers": 1,
+        "stddevs": 2,
+        "outliers": "0 0 0 0",
+        "ops": 289.35,
+        "total": 0.034567890
+      }
+    },
+    {
+      "name": "test_zero_time",
+      "fullname": "tests/test_edge_cases.py::test_zero_time",
+      "params": null,
+      "group": null,
+      "extra_info": "",
+      "options": {
+        "disable_gc": false,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.0,
+        "max": 0.0000001,
+        "mean": 0.0,
+        "stddev": 0.0,
+        "rounds": 1,
+        "median": 0.0,
+        "iqr": 0.0,
+        "q1": 0.0,
+        "q3": 0.0,
+        "iqr_outliers": 0,
+        "stddevs": 0,
+        "outliers": "0 0 0 0",
+        "ops": 0.0,
+        "total": 0.0
+      }
+    }
+  ],
+  "datetime": "2025-10-18T15:00:00",
+  "version": "4.0.1"
+}
