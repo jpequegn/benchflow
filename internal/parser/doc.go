@@ -11,11 +11,11 @@
 //
 //   - Rust: cargo bench bencher format
 //   - Python: pytest-benchmark JSON
+//   - Go: testing.B output
 //
 // Planned support:
 //
 //   - Rust: criterion format
-//   - Go: testing.B output
 //
 // # Usage
 //
@@ -146,10 +146,44 @@
 //   - Partial stats: skipped if key metrics missing
 //   - Zero throughput: skipped if ops not present
 //
+// # Go Parser Specifics
+//
+// The Go parser supports testing.B output format:
+//
+// Expected format (from `go test -bench`):
+//
+//	goos: darwin
+//	goarch: arm64
+//	pkg: github.com/example/benchmarks
+//	cpu: Apple M1
+//
+//	BenchmarkSort-8         1000000              1234 ns/op             512 B/op          10 allocs/op
+//	BenchmarkSearch-8       5000000               234 ns/op               0 B/op           0 allocs/op
+//	BenchmarkInsert-8        500000              3456 ns/op            1024 B/op          20 allocs/op
+//
+//	PASS
+//	ok      github.com/example/benchmarks    2.456s
+//
+// Features:
+//   - Parses text format with regex (similar to Rust bencher)
+//   - Converts time from nanoseconds to time.Duration
+//   - Extracts iterations (N) and ns/op (mean time)
+//   - Optional memory metrics: B/op (bytes per operation), allocs/op (allocations per operation)
+//   - Handles optional fields when -benchmem flag is not used
+//   - Skips debug output (--- BENCH: lines, file references)
+//   - Supports various Go GOMAXPROCS suffixes (-1, -8, -16, -32, etc.)
+//
+// Edge cases handled:
+//   - Zero allocations: B/op and allocs/op omitted from metadata
+//   - Float time values: converted to int64 nanoseconds
+//   - Large numbers: millions of iterations, large memory allocations
+//   - No -benchmem flag: parses benchmark line without memory metrics
+//   - Debug output: --- BENCH: lines and log output skipped
+//   - Various benchmark names: with underscores, CamelCase, etc.
+//
 // # Future Extensions
 //
 // Planned additions:
 //   - Criterion format parser with histogram data
-//   - Go testing.B output parser
 //   - Custom format support via configuration
 package parser
