@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Benchflow is a cross-language benchmark aggregator with parallel execution and visualization. It's built in Go to leverage goroutines for concurrent benchmark runs across multiple languages (Rust, Python, Go, Node.js).
 
-**Current Status**: Early planning phase - foundation infrastructure not yet implemented. Focus on Phase 1 completion before moving to parser/execution logic.
+**Current Status**: Phase 3 complete! Foundation (Phase 1), Rust parser (Phase 2), and parallel execution engine (Phase 3) are fully implemented and tested. The `benchflow run` command is functional and can execute benchmarks concurrently. Next: Phase 4 (Aggregation & Storage).
 
 ## Development Commands
 
@@ -132,14 +132,14 @@ Reporter (internal/reporter) - Generate HTML/JSON/CSV output
 
 Work proceeds sequentially through 6 phases (tracked in GitHub Issues):
 
-1. **Foundation** (#1) - CLI framework, config, logging, tests, CI/CD
-2. **Rust Parser** (#2) - Bencher/criterion format parsing
-3. **Execution Engine** (#3) - Goroutine-based parallel execution
+1. **Foundation** (#1) - ✅ COMPLETE - CLI framework, config, logging, tests, CI/CD
+2. **Rust Parser** (#2) - ✅ COMPLETE - Bencher/criterion format parsing (82.9% coverage)
+3. **Execution Engine** (#3) - ✅ COMPLETE - Goroutine-based parallel execution (94.0% coverage)
 4. **Aggregation** (#4) - Result normalization, statistics, SQLite storage
 5. **HTML Reports** (#5) - Template-based visualization with Chart.js
 6. **Multi-language** (#6) - Python and Go benchmark support
 
-**Current Priority**: Complete Phase 1 foundation before proceeding.
+**Current Priority**: Phase 4 - Result aggregation and storage.
 
 ## Key Design Patterns
 
@@ -203,21 +203,41 @@ storage:
 - **Golden files**: Expected output comparisons for reporters
 - **CI/CD**: GitHub Actions runs tests on every PR
 
-## Future CLI Usage
+## CLI Usage
 
 ```bash
-# Run all benchmarks from config
+# Run all benchmarks from config (✅ IMPLEMENTED)
 benchflow run --config benchflow.yaml
 
-# Compare against baseline
+# Run with custom parallelism (✅ IMPLEMENTED)
+benchflow run --parallel 8
+
+# Run specific benchmark (✅ IMPLEMENTED)
+benchflow run --name rust-sort-algorithms
+
+# Run with timeout (✅ IMPLEMENTED)
+benchflow run --timeout 10m
+
+# Compare against baseline (Phase 4)
 benchflow compare --baseline v1.0.0 --current HEAD
 
-# Generate HTML report
+# Generate HTML report (Phase 5)
 benchflow report --format html --output report.html
-
-# Run specific benchmark
-benchflow run --name rust-sort
 ```
+
+### Implemented Features (Phase 3)
+
+The executor supports:
+- **Parallel execution**: Worker pool pattern with configurable concurrency (default: 4)
+- **Context-based cancellation**: Graceful shutdown on CTRL+C or timeout
+- **Automatic retry**: Configurable retry attempts with exponential backoff
+- **Progress tracking**: Real-time event notifications (started, completed, failed, retrying)
+- **Fail-fast mode**: Stop on first failure (optional)
+- **Parser registry**: Plugin architecture for language-specific parsers
+- **Comprehensive error handling**: Execution errors, parsing errors, timeouts
+- **Performance**: 10 benchmarks with 5 workers complete in ~240ms vs 1s sequential
+
+Test coverage: 94.0%
 
 ## Related Projects
 
