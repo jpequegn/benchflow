@@ -1,0 +1,16 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/example/benchmarks
+cpu: Apple M1
+
+BenchmarkQuickSort-8            1000000              1500 ns/op             256 B/op           5 allocs/op
+BenchmarkMergeSort-8            800000              1800 ns/op             512 B/op           8 allocs/op
+BenchmarkHeapSort-8             900000              1600 ns/op             384 B/op           6 allocs/op
+
+--- BENCH: BenchmarkQuickSort-8
+    bench_test.go:42: sorting 1000 elements
+--- BENCH: BenchmarkMergeSort-8
+    bench_test.go:50: sorting 1000 elements
+
+PASS
+ok      github.com/example/benchmarks    2.890s

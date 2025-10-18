@@ -1,0 +1,10 @@
+goos: windows
+goarch: amd64
+pkg: github.com/windows/benchmark
+
+BenchmarkAdd-8                  1000000000                1.5 ns/op
+BenchmarkMultiply-8             1000000000                2.3 ns/op
+BenchmarkDivide-8                500000000                2.8 ns/op
+
+PASS
+ok      github.com/windows/benchmark    4.123s
