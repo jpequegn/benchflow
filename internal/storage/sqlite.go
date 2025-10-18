@@ -90,7 +90,7 @@ func (s *SQLiteStorage) Save(suite *aggregator.AggregatedSuite) error {
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	// Serialize metadata
 	metadataJSON, err := json.Marshal(suite.Metadata)
