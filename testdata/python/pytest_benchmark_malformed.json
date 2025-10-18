@@ -1,0 +1,44 @@
+{
+  "machine_info": {
+    "host": "test-host",
+    "python": "3.11.6",
+    "implementation": "CPython"
+  },
+  "benchmarks": [
+    {
+      "name": "test_missing_stats",
+      "fullname": "tests/test_malformed.py::test_missing_stats",
+      "params": null,
+      "group": null,
+      "extra_info": "",
+      "options": {
+        "disable_gc": false,
+        "warmup": false
+      }
+    },
+    {
+      "name": "test_partial_stats",
+      "fullname": "tests/test_malformed.py::test_partial_stats",
+      "params": null,
+      "group": null,
+      "extra_info": "",
+      "options": {
+        "disable_gc": false,
+        "warmup": false
+      },
+      "stats": {
+        "mean": 0.001,
+        "stddev": 0.0001,
+        "rounds": 50,
+        "min": 0.0008,
+        "max": 0.0015,
+        "median": 0.001,
+        "iqr": 0.0002,
+        "ops": 1000.0,
+        "total": 0.05
+      }
+    }
+  ],
+  "datetime": "2025-10-18T15:30:00",
+  "version": "4.0.1"
+}

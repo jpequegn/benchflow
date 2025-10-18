@@ -1,0 +1,69 @@
+{
+  "machine_info": {
+    "host": "MacBook-Pro.local",
+    "python": "3.11.6",
+    "implementation": "CPython",
+    "processor": "arm64",
+    "machine": "Darwin",
+    "system": "Darwin",
+    "release": "24.0.0"
+  },
+  "benchmarks": [
+    {
+      "name": "test_sort",
+      "fullname": "tests/test_perf.py::test_sort",
+      "params": null,
+      "group": null,
+      "extra_info": "",
+      "options": {
+        "disable_gc": false,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.0001234,
+        "max": 0.0005678,
+        "mean": 0.0002456,
+        "stddev": 0.0000123,
+        "rounds": 100,
+        "median": 0.0002400,
+        "iqr": 0.0000050,
+        "q1": 0.0002200,
+        "q3": 0.0002250,
+        "iqr_outliers": 5,
+        "stddevs": 2,
+        "outliers": "0 0 0 0",
+        "ops": 4071.66,
+        "total": 0.024560
+      }
+    },
+    {
+      "name": "test_search",
+      "fullname": "tests/test_perf.py::test_search",
+      "params": null,
+      "group": null,
+      "extra_info": "",
+      "options": {
+        "disable_gc": false,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.0000567,
+        "max": 0.0001234,
+        "mean": 0.0000890,
+        "stddev": 0.0000089,
+        "rounds": 50,
+        "median": 0.0000850,
+        "iqr": 0.0000030,
+        "q1": 0.0000800,
+        "q3": 0.0000830,
+        "iqr_outliers": 2,
+        "stddevs": 1,
+        "outliers": "0 0 0 0",
+        "ops": 11235.96,
+        "total": 0.004450
+      }
+    }
+  ],
+  "datetime": "2025-10-18T14:30:00",
+  "version": "4.0.1"
+}
