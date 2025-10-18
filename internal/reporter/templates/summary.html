@@ -1,0 +1,140 @@
+{{define "content"}}
+<!-- Summary Statistics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Total Benchmarks</div>
+        <div class="stat-value">{{.Suite.Stats.TotalBenchmarks}}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Fastest</div>
+        <div class="stat-value">{{formatDuration .Suite.Stats.FastestTime}}</div>
+        <div class="subtitle">{{.Suite.Stats.FastestBench}}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Slowest</div>
+        <div class="stat-value">{{formatDuration .Suite.Stats.SlowestTime}}</div>
+        <div class="subtitle">{{.Suite.Stats.SlowestBench}}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Duration</div>
+        <div class="stat-value">{{formatDuration .Suite.Stats.TotalDuration}}</div>
+    </div>
+</div>
+
+{{if .ShowCharts}}
+<!-- Benchmark Chart -->
+<div class="card">
+    <h2>Performance Overview</h2>
+    <div class="chart-container">
+        <canvas id="benchmarkChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('benchmarkChart');
+    new Chart(ctx, {
+        type: '{{.ChartData.ChartType}}',
+        data: {
+            labels: {{toJSON .ChartData.Labels}},
+            datasets: [
+                {{range .ChartData.Datasets}}
+                {
+                    label: '{{.Label}}',
+                    data: {{toJSON .Data}},
+                    backgroundColor: '{{.BackgroundColor}}',
+                    borderColor: '{{.BorderColor}}',
+                    borderWidth: {{.BorderWidth}}
+                },
+                {{end}}
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: '{{.ChartData.ChartTitle}}',
+                    color: '#E0E6F0',
+                    font: {
+                        size: 16,
+                        weight: '500'
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: '#A3A9BF'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '{{.ChartData.YAxisLabel}}',
+                        color: '#A3A9BF'
+                    },
+                    ticks: {
+                        color: '#A3A9BF'
+                    },
+                    grid: {
+                        color: '#333A56'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '{{.ChartData.XAxisLabel}}',
+                        color: '#A3A9BF'
+                    },
+                    ticks: {
+                        color: '#A3A9BF'
+                    },
+                    grid: {
+                        color: '#333A56'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{{end}}
+
+{{if .ShowDetails}}
+<!-- Detailed Results -->
+<div class="card">
+    <h2>Benchmark Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Language</th>
+                <th>Mean</th>
+                <th>Median</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Std Dev</th>
+                <th>Iterations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Suite.Results}}
+            <tr>
+                <td><strong>{{.Name}}</strong></td>
+                <td>{{.Language}}</td>
+                <td>{{formatDuration .Mean}}</td>
+                <td>{{formatDuration .Median}}</td>
+                <td>{{formatDuration .Min}}</td>
+                <td>{{formatDuration .Max}}</td>
+                <td>±{{formatDuration .StdDev}}</td>
+                <td>{{.Iterations}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}
+{{end}}
+
+{{template "base" .}}

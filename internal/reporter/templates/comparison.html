@@ -1,0 +1,152 @@
+{{define "content"}}
+<!-- Comparison Summary -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Total Comparisons</div>
+        <div class="stat-value">{{len .Comparison.Comparisons}}</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--danger);">
+        <div class="stat-label">Regressions</div>
+        <div class="stat-value regression">{{.Comparison.RegressionCount}}</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--success);">
+        <div class="stat-label">Improvements</div>
+        <div class="stat-value improvement">{{.Comparison.ImprovementCount}}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Unchanged</div>
+        <div class="stat-value">{{.Comparison.UnchangedCount}}</div>
+    </div>
+</div>
+
+<!-- Threshold Info -->
+<div class="card">
+    <p>Regression threshold: <strong>{{formatPercent .Comparison.Threshold}}</strong></p>
+    <p class="subtitle">Changes above this threshold are flagged as regressions or improvements.</p>
+</div>
+
+{{if .ShowCharts}}
+<!-- Comparison Chart -->
+<div class="card">
+    <h2>Baseline vs Current</h2>
+    <div class="chart-container">
+        <canvas id="comparisonChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('comparisonChart');
+    new Chart(ctx, {
+        type: '{{.ChartData.ChartType}}',
+        data: {
+            labels: {{toJSON .ChartData.Labels}},
+            datasets: [
+                {{range .ChartData.Datasets}}
+                {
+                    label: '{{.Label}}',
+                    data: {{toJSON .Data}},
+                    backgroundColor: '{{.BackgroundColor}}',
+                    borderColor: '{{.BorderColor}}',
+                    borderWidth: {{.BorderWidth}}
+                },
+                {{end}}
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: '{{.ChartData.ChartTitle}}',
+                    color: '#E0E6F0',
+                    font: {
+                        size: 16,
+                        weight: '500'
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: '#A3A9BF'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '{{.ChartData.YAxisLabel}}',
+                        color: '#A3A9BF'
+                    },
+                    ticks: {
+                        color: '#A3A9BF'
+                    },
+                    grid: {
+                        color: '#333A56'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '{{.ChartData.XAxisLabel}}',
+                        color: '#A3A9BF'
+                    },
+                    ticks: {
+                        color: '#A3A9BF'
+                    },
+                    grid: {
+                        color: '#333A56'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{{end}}
+
+{{if .ShowDetails}}
+<!-- Detailed Comparison -->
+<div class="card">
+    <h2>Detailed Comparison</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Benchmark</th>
+                <th>Status</th>
+                <th>Baseline</th>
+                <th>Current</th>
+                <th>Delta</th>
+                <th>Change (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Comparison.Comparisons}}
+            <tr>
+                <td><strong>{{.Name}}</strong></td>
+                <td>
+                    {{if .Regression}}
+                    <span class="badge badge-danger">{{statusIcon .}} Regression</span>
+                    {{else if .Improvement}}
+                    <span class="badge badge-success">{{statusIcon .}} Improvement</span>
+                    {{else}}
+                    <span class="badge badge-warning">{{statusIcon .}} Unchanged</span>
+                    {{end}}
+                </td>
+                <td>{{formatDuration .Baseline.Mean}}</td>
+                <td>{{formatDuration .Current.Mean}}</td>
+                <td class="{{regressionClass .}}">
+                    {{plusSign .Delta}}{{formatDuration .Delta}}
+                </td>
+                <td class="{{regressionClass .}}">
+                    {{if gt .DeltaPercent 0.0}}+{{end}}{{formatPercent .DeltaPercent}}
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}
+{{end}}
+
+{{template "base" .}}

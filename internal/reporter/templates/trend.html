@@ -1,0 +1,144 @@
+{{define "content"}}
+{{if .History}}
+<!-- Trend Statistics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Total Data Points</div>
+        <div class="stat-value">{{len .History}}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Benchmark</div>
+        <div class="stat-value">{{(index .History 0).Name}}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Latest</div>
+        <div class="stat-value">{{formatDuration (index .History 0).Mean}}</div>
+        <div class="subtitle">{{formatTimestamp (index .History 0).Timestamp}}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Oldest</div>
+        <div class="stat-value">{{formatDuration (index .History (sub (len .History) 1)).Mean}}</div>
+        <div class="subtitle">{{formatTimestamp (index .History (sub (len .History) 1)).Timestamp}}</div>
+    </div>
+</div>
+{{end}}
+
+{{if .ShowCharts}}
+<!-- Trend Chart -->
+<div class="card">
+    <h2>Performance Trend Over Time</h2>
+    <div class="chart-container">
+        <canvas id="trendChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('trendChart');
+    new Chart(ctx, {
+        type: '{{.ChartData.ChartType}}',
+        data: {
+            labels: {{toJSON .ChartData.Labels}},
+            datasets: [
+                {{range .ChartData.Datasets}}
+                {
+                    label: '{{.Label}}',
+                    data: {{toJSON .Data}},
+                    backgroundColor: '{{.BackgroundColor}}',
+                    borderColor: '{{.BorderColor}}',
+                    borderWidth: {{.BorderWidth}},
+                    tension: 0.4,
+                    fill: true
+                },
+                {{end}}
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: '{{.ChartData.ChartTitle}}',
+                    color: '#E0E6F0',
+                    font: {
+                        size: 16,
+                        weight: '500'
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: '#A3A9BF'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '{{.ChartData.YAxisLabel}}',
+                        color: '#A3A9BF'
+                    },
+                    ticks: {
+                        color: '#A3A9BF'
+                    },
+                    grid: {
+                        color: '#333A56'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '{{.ChartData.XAxisLabel}}',
+                        color: '#A3A9BF'
+                    },
+                    ticks: {
+                        color: '#A3A9BF',
+                        maxRotation: 45,
+                        minRotation: 45
+                    },
+                    grid: {
+                        color: '#333A56'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{{end}}
+
+{{if .ShowDetails}}
+<!-- Historical Data -->
+<div class="card">
+    <h2>Historical Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Mean</th>
+                <th>Median</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Std Dev</th>
+                <th>Iterations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .History}}
+            <tr>
+                <td>{{formatTimestamp .Timestamp}}</td>
+                <td>{{formatDuration .Mean}}</td>
+                <td>{{formatDuration .Median}}</td>
+                <td>{{formatDuration .Min}}</td>
+                <td>{{formatDuration .Max}}</td>
+                <td>±{{formatDuration .StdDev}}</td>
+                <td>{{.Iterations}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}
+{{end}}
+
+{{template "base" .}}
