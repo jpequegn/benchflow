@@ -11,7 +11,7 @@ import (
 func TestNewBasicComparator(t *testing.T) {
 	comp := NewBasicComparator()
 	if comp == nil {
-		t.Error("NewBasicComparator() returned nil")
+		t.Fatal("NewBasicComparator() returned nil")
 	}
 	if comp.ConfidenceLevel != 0.95 {
 		t.Errorf("ConfidenceLevel = %v, want 0.95", comp.ConfidenceLevel)
@@ -250,7 +250,7 @@ func TestCompare_NilInputs(t *testing.T) {
 	// Test nil baseline
 	result := comp.Compare(nil, &parser.BenchmarkSuite{})
 	if result == nil {
-		t.Error("Compare(nil, suite) returned nil")
+		t.Fatal("Compare(nil, suite) returned nil")
 	}
 	if len(result.Benchmarks) != 0 {
 		t.Errorf("Compare(nil, suite) len(Benchmarks) = %d, want 0", len(result.Benchmarks))
@@ -259,7 +259,7 @@ func TestCompare_NilInputs(t *testing.T) {
 	// Test nil current
 	result = comp.Compare(&parser.BenchmarkSuite{}, nil)
 	if result == nil {
-		t.Error("Compare(suite, nil) returned nil")
+		t.Fatal("Compare(suite, nil) returned nil")
 	}
 	if len(result.Benchmarks) != 0 {
 		t.Errorf("Compare(suite, nil) len(Benchmarks) = %d, want 0", len(result.Benchmarks))
