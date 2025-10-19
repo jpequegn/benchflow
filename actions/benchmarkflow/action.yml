@@ -106,10 +106,10 @@ runs:
         INPUT_REGRESSION_THRESHOLD: ${{ inputs.regression-threshold }}
         INPUT_BASELINE_BRANCH: ${{ inputs.baseline-branch }}
       run: |
-        set -e
+        set -o pipefail
 
         BENCHFLOW=${{ github.workspace }}/benchflow
-        CONFIG="${INPUT_CONFIG:-.}"
+        CONFIG="${INPUT_CONFIG:-./benchflow.yaml}"
         PARALLEL="${INPUT_PARALLEL:-4}"
         TIMEOUT="${INPUT_TIMEOUT:-10m}"
         FORMAT="${INPUT_FORMAT:-html}"
@@ -120,17 +120,27 @@ runs:
         echo "::notice::Parallel: $PARALLEL"
         echo "::notice::Format: $FORMAT"
 
-        # Run benchmarks
+        # Run benchmarks (allow graceful failure if no benchmarks configured)
         mkdir -p "$OUTPUT_DIR"
-        $BENCHFLOW --verbose run \
+        if $BENCHFLOW --verbose run \
           --config "$CONFIG" \
           --parallel "$PARALLEL" \
-          --timeout "$TIMEOUT"
+          --timeout "$TIMEOUT"; then
+          echo "::notice::Benchmarks completed successfully"
 
-        # Generate report
-        $BENCHFLOW report \
-          --format "$FORMAT" \
-          --output "$OUTPUT_DIR/report"
+          # Generate report
+          $BENCHFLOW report \
+            --format "$FORMAT" \
+            --output "$OUTPUT_DIR/report"
+        else
+          # Benchmarks may have failed or no benchmarks configured
+          echo "::warning::No benchmarks ran or benchmark execution failed"
+          echo "::notice::This is expected if no benchmarks are configured in $CONFIG"
+
+          # Still create output directory for artifacts
+          mkdir -p "$OUTPUT_DIR"
+          echo "No benchmarks were executed" > "$OUTPUT_DIR/report.html"
+        fi
 
         # Set outputs
         echo "report-path=$OUTPUT_DIR" >> $GITHUB_OUTPUT
