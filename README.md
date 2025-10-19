@@ -161,6 +161,77 @@ benchflow report --format json --output results.json
 benchflow report --format csv --output results.csv
 ```
 
+## Documentation
+
+### Comparative Analysis
+
+Learn how to compare benchmark results, detect regressions, and interpret statistical metrics:
+
+- **[Comparative Analysis Guide](docs/COMPARISON.md)** - Complete user guide with examples
+  - Quick start comparisons
+  - Understanding statistical analysis
+  - Report interpretation (Markdown, HTML, JSON)
+  - CI/CD integration patterns
+  - Troubleshooting common issues
+
+- **[API Reference](docs/API_COMPARATOR.md)** - Detailed API documentation
+  - Comparator interface
+  - BasicComparator configuration
+  - Data structures (ComparisonResult, BenchmarkComparison, etc.)
+  - Usage examples
+  - Thread safety
+
+- **[Statistical Concepts Guide](docs/STATISTICS.md)** - Statistical foundations
+  - T-tests and p-values
+  - Confidence levels (95%, 99%, etc.)
+  - Effect size (Cohen's d)
+  - Confidence intervals
+  - Common statistical mistakes
+
+### CLI Commands
+
+```bash
+# Run benchmarks
+benchflow run --config benchflow.yaml
+
+# Compare results with statistical analysis
+benchflow compare --baseline baseline.json --current current.json
+
+# Generate reports
+benchflow report --format html --output report.html
+
+# Run with custom configuration
+benchflow run --parallel 8 --timeout 5m
+```
+
+### Configuration
+
+Benchflow uses YAML configuration files for benchmark definitions:
+
+```yaml
+benchmarks:
+  - name: "rust-sort"
+    language: rust
+    command: "cargo bench --bench sort"
+    timeout: 5m
+
+  - name: "go-sort"
+    language: go
+    command: "go test -bench=BenchmarkSort -benchmem"
+    timeout: 2m
+
+execution:
+  parallel: 4
+  retry: 1
+  timeout: 15m
+
+output:
+  formats: [html, json, csv]
+  directory: ./reports
+```
+
+See [benchflow.yaml](benchflow.yaml) for complete example with all supported languages.
+
 ## Development
 
 ### Build
