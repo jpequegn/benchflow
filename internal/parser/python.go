@@ -21,39 +21,39 @@ func (p *PythonParser) Language() string {
 
 // pythonBenchmarkJSON represents the structure of pytest-benchmark JSON output
 type pythonBenchmarkJSON struct {
-	Benchmarks []pythonBenchmark `json:"benchmarks"`
-	Datetime   string            `json:"datetime"`
-	Version    string            `json:"version"`
+	Benchmarks  []pythonBenchmark      `json:"benchmarks"`
+	Datetime    string                 `json:"datetime"`
+	Version     string                 `json:"version"`
 	MachineInfo map[string]interface{} `json:"machine_info"`
 }
 
 // pythonBenchmark represents a single benchmark entry in pytest-benchmark JSON
 type pythonBenchmark struct {
-	Name     string                 `json:"name"`
-	FullName string                 `json:"fullname"`
-	Params   interface{}            `json:"params"`
-	Group    *string                `json:"group"`
-	Stats    *pythonBenchmarkStats  `json:"stats"`
-	Options  map[string]interface{} `json:"options"`
-	ExtraInfo string                `json:"extra_info"`
+	Name      string                 `json:"name"`
+	FullName  string                 `json:"fullname"`
+	Params    interface{}            `json:"params"`
+	Group     *string                `json:"group"`
+	Stats     *pythonBenchmarkStats  `json:"stats"`
+	Options   map[string]interface{} `json:"options"`
+	ExtraInfo string                 `json:"extra_info"`
 }
 
 // pythonBenchmarkStats represents the stats for a pytest-benchmark benchmark
 type pythonBenchmarkStats struct {
-	Min      float64 `json:"min"`
-	Max      float64 `json:"max"`
-	Mean     float64 `json:"mean"`
-	StdDev   float64 `json:"stddev"`
-	Median   float64 `json:"median"`
-	Rounds   int64   `json:"rounds"`
-	IQR      float64 `json:"iqr"`
-	Q1       float64 `json:"q1"`
-	Q3       float64 `json:"q3"`
-	IQROutliers int64 `json:"iqr_outliers"`
-	Stddevs  int64   `json:"stddevs"`
-	Outliers string  `json:"outliers"`
-	Ops      float64 `json:"ops"`
-	Total    float64 `json:"total"`
+	Min         float64 `json:"min"`
+	Max         float64 `json:"max"`
+	Mean        float64 `json:"mean"`
+	StdDev      float64 `json:"stddev"`
+	Median      float64 `json:"median"`
+	Rounds      int64   `json:"rounds"`
+	IQR         float64 `json:"iqr"`
+	Q1          float64 `json:"q1"`
+	Q3          float64 `json:"q3"`
+	IQROutliers int64   `json:"iqr_outliers"`
+	Stddevs     int64   `json:"stddevs"`
+	Outliers    string  `json:"outliers"`
+	Ops         float64 `json:"ops"`
+	Total       float64 `json:"total"`
 }
 
 // Parse parses pytest-benchmark JSON output

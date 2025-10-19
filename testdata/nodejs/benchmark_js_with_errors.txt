@@ -1,0 +1,7 @@
+RegExp#test x 48,985,511 ops/sec ±0.73% (90 runs sampled)
+String#indexOf x 819,109,711 ops/sec ±0.77% (92 runs sampled)
+Array.prototype.some x 111 ops/sec ±1.33% (78 runs sampled)
+Fastest is String#indexOf
+
+JSON#parse x 10,000 ops/sec ±5.00% (60 runs sampled)
+JSON#stringify x 25,000 ops/sec ±3.00% (70 runs sampled)

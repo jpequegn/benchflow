@@ -1,0 +1,6 @@
+Single operation x 1 ops/sec ±100.00% (5 runs sampled)
+Very fast x 123,456,789 ops/sec ±0.01% (100 runs sampled)
+With-special-chars x 1,000 ops/sec ±5.00% (50 runs sampled)
+Test_with_underscores x 50,000 ops/sec ±3.45% (75 runs sampled)
+Very_very_long_benchmark_name_with_many_characters x 2,500 ops/sec ±2.50% (40 runs sampled)
+run x 999,999,999 ops/sec ±0.99% (99 runs sampled)

@@ -84,7 +84,7 @@ func (p *GoParser) Parse(output []byte) (*BenchmarkSuite, error) {
 		nameStr := matches[1]
 		iterationsStr := matches[2]
 		timeStr := matches[3]
-		bytesOpStr := matches[4] // Optional
+		bytesOpStr := matches[4]  // Optional
 		allocsOpStr := matches[5] // Optional
 
 		// Reconstruct full name with "Benchmark" prefix
