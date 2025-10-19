@@ -19,7 +19,7 @@ func LoadBenchmarkSuite(filePath string) (*parser.BenchmarkSuite, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Determine file format by extension
 	if strings.HasSuffix(filePath, ".json") {

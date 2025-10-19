@@ -59,8 +59,10 @@ func (bta *BasicTrendAnalyzer) CalculateTrend(history []*HistoricalComparison, m
 	for _, comp := range sorted {
 		predicted := intercept + slope*float64(comp.CreatedAt.Sub(startTime).Hours()/24)
 		actual := float64(comp.CurrentTimeNs)
-		ssRes += math.Pow(actual-predicted, 2)
-		ssTot += math.Pow(actual-meanY, 2)
+		diff := actual - predicted
+		ssRes += diff * diff
+		diffMean := actual - meanY
+		ssTot += diffMean * diffMean
 	}
 
 	rSquared := 1.0
@@ -151,7 +153,7 @@ func (bta *BasicTrendAnalyzer) DetectAnomalies(history []*HistoricalComparison, 
 		zScore := (value - mean) / stdDev
 
 		if math.Abs(zScore) > zScoreThreshold {
-			severity := "medium"
+			var severity string
 			if math.Abs(zScore) > 3.0 {
 				severity = "critical"
 			} else if math.Abs(zScore) > 2.5 {

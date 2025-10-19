@@ -12,7 +12,6 @@ import (
 type CachedComparator struct {
 	comparator Comparator
 	cache      *LRUCache
-	mu         sync.RWMutex
 }
 
 // LRUCache implements a simple LRU cache for comparison results
@@ -84,13 +83,13 @@ func (cc *CachedComparator) cacheKey(baseline, current *parser.BenchmarkSuite) s
 
 	if baseline != nil {
 		for _, r := range baseline.Results {
-			fmt.Fprintf(h, "%s:%s:%d", r.Name, r.Language, r.Time)
+			_, _ = fmt.Fprintf(h, "%s:%s:%d", r.Name, r.Language, r.Time)
 		}
 	}
 
 	if current != nil {
 		for _, r := range current.Results {
-			fmt.Fprintf(h, "%s:%s:%d", r.Name, r.Language, r.Time)
+			_, _ = fmt.Fprintf(h, "%s:%s:%d", r.Name, r.Language, r.Time)
 		}
 	}
 

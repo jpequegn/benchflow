@@ -422,25 +422,25 @@ func setupTestStorage(t *testing.T) (*SQLiteStorage, func()) {
 	if err != nil {
 		t.Fatalf("failed to create temp file: %v", err)
 	}
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	path := tmpFile.Name()
 
 	storage, err := NewSQLiteStorage(path)
 	if err != nil {
-		os.Remove(path)
+		_ = os.Remove(path)
 		t.Fatalf("failed to create storage: %v", err)
 	}
 
 	if err := storage.Init(); err != nil {
-		storage.Close()
-		os.Remove(path)
+		_ = storage.Close()
+		_ = os.Remove(path)
 		t.Fatalf("failed to initialize storage: %v", err)
 	}
 
 	cleanup := func() {
-		storage.Close()
-		os.Remove(path)
+		_ = storage.Close()
+		_ = os.Remove(path)
 	}
 
 	return storage, cleanup

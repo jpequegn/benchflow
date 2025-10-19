@@ -15,13 +15,13 @@ func TestSaveComparison(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		t.Fatalf("Failed to init storage: %v", err)
@@ -70,13 +70,13 @@ func TestGetComparisonHistory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		t.Fatalf("Failed to init storage: %v", err)
@@ -135,13 +135,13 @@ func TestGetComparisonHistoryRange(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		t.Fatalf("Failed to init storage: %v", err)
@@ -199,13 +199,13 @@ func TestPruneComparisonHistory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		t.Fatalf("Failed to init storage: %v", err)
@@ -260,13 +260,13 @@ func TestComparisonHistoryWithMetadata(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		t.Fatalf("Failed to init storage: %v", err)

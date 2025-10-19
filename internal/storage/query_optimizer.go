@@ -113,7 +113,7 @@ func (qo *QueryOptimizer) GetHistoryOptimized(benchmarkName string, limit, offse
 	if err != nil {
 		return nil, fmt.Errorf("failed to query benchmark history: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var results []*aggregator.AggregatedResult
 
@@ -180,7 +180,7 @@ func (qo *QueryOptimizer) GetComparisonHistoryOptimized(benchmarkName, language 
 	if err != nil {
 		return nil, fmt.Errorf("failed to query comparison history: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var history []*analyzer.HistoricalComparison
 	for rows.Next() {
@@ -326,10 +326,8 @@ func (qc *QueryCache) MaxSize() int {
 func loadSuiteOptimized(db *sql.DB, stored *StoredSuite, metadataJSON string) (*aggregator.AggregatedSuite, error) {
 	// Deserialize metadata
 	var metadata map[string]string
-	if metadataJSON != "" {
-		// Note: In production, this would use json.Unmarshal
-		// Simplified for this example
-	}
+	// Note: In production, this would use json.Unmarshal to parse metadataJSON
+	// For now, initialize empty map
 
 	// Load results with optimized query
 	rows, err := db.Query(`
@@ -341,7 +339,7 @@ func loadSuiteOptimized(db *sql.DB, stored *StoredSuite, metadataJSON string) (*
 	if err != nil {
 		return nil, fmt.Errorf("failed to query results: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var results []*aggregator.AggregatedResult
 

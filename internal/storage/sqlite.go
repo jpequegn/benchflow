@@ -125,7 +125,7 @@ func (s *SQLiteStorage) Save(suite *aggregator.AggregatedSuite) error {
 	if err != nil {
 		return fmt.Errorf("failed to prepare statement: %w", err)
 	}
-	defer stmt.Close()
+	defer func() { _ = stmt.Close() }()
 
 	for _, r := range suite.Results {
 		_, err := stmt.Exec(
@@ -209,7 +209,7 @@ func (s *SQLiteStorage) GetRange(start, end time.Time) ([]*aggregator.Aggregated
 	if err != nil {
 		return nil, fmt.Errorf("failed to query suite range: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var suites []*aggregator.AggregatedSuite
 
@@ -253,7 +253,7 @@ func (s *SQLiteStorage) GetHistory(benchmarkName string, limit int) ([]*aggregat
 	if err != nil {
 		return nil, fmt.Errorf("failed to query benchmark history: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var results []*aggregator.AggregatedResult
 
@@ -339,7 +339,7 @@ func (s *SQLiteStorage) loadSuite(stored *StoredSuite, metadataJSON string) (*ag
 	if err != nil {
 		return nil, fmt.Errorf("failed to query results: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var results []*aggregator.AggregatedResult
 

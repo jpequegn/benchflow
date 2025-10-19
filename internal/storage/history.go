@@ -119,7 +119,7 @@ func (s *SQLiteStorage) GetComparisonHistory(benchmarkName, language string, lim
 	if err != nil {
 		return nil, fmt.Errorf("failed to query comparison history: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var history []*analyzer.HistoricalComparison
 	for rows.Next() {
@@ -169,7 +169,7 @@ func (s *SQLiteStorage) GetComparisonHistoryRange(benchmarkName, language string
 	if err != nil {
 		return nil, fmt.Errorf("failed to query comparison history range: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var history []*analyzer.HistoricalComparison
 	for rows.Next() {

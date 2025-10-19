@@ -14,13 +14,13 @@ func TestQueryOptimizer_GetLatestOptimizedWithCache(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		t.Fatalf("Failed to init storage: %v", err)
@@ -90,13 +90,13 @@ func TestQueryOptimizer_GetHistoryOptimizedWithPagination(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		t.Fatalf("Failed to init storage: %v", err)
@@ -225,13 +225,13 @@ func BenchmarkQueryOptimizer_GetLatestUncached(b *testing.B) {
 	if err != nil {
 		b.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		b.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		b.Fatalf("Failed to init storage: %v", err)
@@ -252,12 +252,12 @@ func BenchmarkQueryOptimizer_GetLatestUncached(b *testing.B) {
 			Timestamp: time.Now(),
 			Duration:  5 * time.Second,
 		}
-		storage.Save(suite)
+		_ = storage.Save(suite)
 	}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		storage.GetLatest()
+		_, _ = storage.GetLatest()
 	}
 }
 
@@ -266,13 +266,13 @@ func BenchmarkQueryOptimizer_GetLatestCached(b *testing.B) {
 	if err != nil {
 		b.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	storage, err := NewSQLiteStorage(tmpFile.Name())
 	if err != nil {
 		b.Fatalf("Failed to create storage: %v", err)
 	}
-	defer storage.Close()
+	defer func() { _ = storage.Close() }()
 
 	if err := storage.Init(); err != nil {
 		b.Fatalf("Failed to init storage: %v", err)
@@ -293,13 +293,13 @@ func BenchmarkQueryOptimizer_GetLatestCached(b *testing.B) {
 			Timestamp: time.Now(),
 			Duration:  5 * time.Second,
 		}
-		storage.Save(suite)
+		_ = storage.Save(suite)
 	}
 
 	optimizer := NewQueryOptimizer(storage.db, 100)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		optimizer.GetLatestOptimized()
+		_, _ = optimizer.GetLatestOptimized()
 	}
 }
