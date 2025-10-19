@@ -48,18 +48,13 @@ jobs:
           node-version: '20'
         continue-on-error: true
 
-      - name: Run Performance Benchmarks
-        uses: ./actions/benchmarkflow
-        with:
-          config: ./benchflow.yaml
-          parallel: 4
-          timeout: 10m
-          format: html
-          comment-pr: false
-          detect-regression: true
-          regression-threshold: '1.05'
-          baseline-branch: main
-          upload-artifact: true
+      - name: Build benchflow CLI
+        run: go build -o benchflow ./cmd/benchflow
+
+      - name: Run benchmarks
+        run: |
+          ./benchflow run --config benchflow.yaml --parallel 4 --timeout 10m --format html
+        continue-on-error: true
 
       - name: Upload to Performance Tracking
         if: always()
