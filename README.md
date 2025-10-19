@@ -61,18 +61,99 @@ benchflow --help
 
 ## Quick Start
 
-```bash
-# View available commands
-benchflow --help
+### 1. Create a Configuration File
 
-# Run benchmarks
+Create `benchflow.yaml`:
+
+```yaml
+benchmarks:
+  - name: "rust-example"
+    language: rust
+    command: "cargo bench"
+    timeout: 5m
+
+  - name: "python-example"
+    language: python
+    command: "pytest --benchmark-only"
+    timeout: 3m
+
+  - name: "go-example"
+    language: go
+    command: "go test -bench=. ./..."
+    timeout: 2m
+
+  - name: "nodejs-example"
+    language: nodejs
+    command: "npm run benchmark"
+    timeout: 2m
+
+execution:
+  parallel: 4
+  retry: 3
+
+output:
+  formats: [html, json, csv]
+  directory: ./reports
+
+storage:
+  enabled: true
+  path: ./benchflow.db
+```
+
+### 2. Run Benchmarks
+
+```bash
+# Run all benchmarks from config
 benchflow run --config benchflow.yaml
 
-# Compare results
-benchflow compare --baseline v1.0.0 --current HEAD
+# Run specific benchmark
+benchflow run --name rust-example
 
-# Generate report
-benchflow report --format html --output report.html
+# Run with custom parallelism
+benchflow run --config benchflow.yaml --parallel 8
+
+# Run with timeout
+benchflow run --config benchflow.yaml --timeout 10m
+
+# Verbose output
+benchflow --verbose run --config benchflow.yaml
+```
+
+### 3. View Results
+
+```bash
+# Results are generated in ./reports/
+# - report.html - Interactive dashboard
+# - results.json - Raw data
+# - results.csv - Spreadsheet format
+
+# Open HTML report in browser
+open reports/report.html    # macOS
+xdg-open reports/report.html  # Linux
+start reports/report.html   # Windows
+```
+
+### 4. Compare Results (Track Regressions)
+
+```bash
+# Compare against previous baseline
+benchflow compare --baseline HEAD~1 --current HEAD
+
+# Compare versions
+benchflow compare --baseline v0.1.0 --current HEAD
+```
+
+### 5. Generate Reports
+
+```bash
+# Generate HTML report
+benchflow report --format html --output performance.html
+
+# Generate JSON report
+benchflow report --format json --output results.json
+
+# Generate CSV report
+benchflow report --format csv --output results.csv
 ```
 
 ## Development

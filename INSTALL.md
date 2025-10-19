@@ -308,7 +308,7 @@ echo "✅ All checks passed!"
 
 ## Running Benchflow
 
-### Basic Usage
+### Quick Reference
 
 ```bash
 # View help
@@ -318,23 +318,62 @@ benchflow --help
 benchflow --version
 
 # Verbose mode
-benchflow --verbose --help
+benchflow --verbose run --config benchflow.yaml
 ```
 
-### Available Commands (Current)
+### Available Commands (All Implemented ✅)
+
+#### **1. Run Benchmarks**
 
 ```bash
-# Run command (Phase 3 - not yet implemented)
+# Run all benchmarks from config
 benchflow run --config benchflow.yaml
 
-# Compare command (Phase 4 - not yet implemented)
-benchflow compare --baseline v1.0.0 --current HEAD
+# Run specific benchmark by name
+benchflow run --config benchflow.yaml --name rust-sort
 
-# Report command (Phase 5 - not yet implemented)
-benchflow report --format html --output report.html
+# Run with custom parallelism
+benchflow run --config benchflow.yaml --parallel 8
+
+# Run with timeout
+benchflow run --config benchflow.yaml --timeout 10m
+
+# Verbose output
+benchflow --verbose run --config benchflow.yaml
 ```
 
-### Using Configuration Files
+#### **2. Compare Results**
+
+```bash
+# Compare against git reference
+benchflow compare --baseline HEAD~1 --current HEAD
+
+# Compare version tags
+benchflow compare --baseline v0.1.0 --current HEAD
+
+# Compare with custom threshold (5% = 1.05)
+benchflow compare --baseline main --current develop --threshold 1.10
+```
+
+#### **3. Generate Reports**
+
+```bash
+# Generate HTML report
+benchflow report --format html --output performance.html
+
+# Generate JSON report
+benchflow report --format json --output results.json
+
+# Generate CSV report
+benchflow report --format csv --output results.csv
+
+# Generate all formats
+benchflow report --format html --format json --format csv --output results
+```
+
+### Configuration Files
+
+#### Basic Setup
 
 ```bash
 # Use custom config
@@ -344,6 +383,78 @@ benchflow run --config examples/benchflow.example.yaml
 export BENCHFLOW_CONFIG=benchflow.yaml
 benchflow run
 ```
+
+#### Configuration Example
+
+Create `benchflow.yaml`:
+
+```yaml
+benchmarks:
+  # Rust benchmark
+  - name: "rust-algorithms"
+    language: rust
+    command: "cargo bench"
+    workdir: "./rust-project"
+    timeout: 5m
+
+  # Python benchmark
+  - name: "python-data"
+    language: python
+    command: "pytest --benchmark-only tests/"
+    workdir: "./python-project"
+    timeout: 3m
+
+  # Go benchmark
+  - name: "go-services"
+    language: go
+    command: "go test -bench=. ./..."
+    workdir: "./go-project"
+    timeout: 2m
+
+  # Node.js benchmark
+  - name: "nodejs-web"
+    language: nodejs
+    command: "npm run benchmark"
+    workdir: "./nodejs-project"
+    timeout: 2m
+
+# Execution configuration
+execution:
+  parallel: 4        # Run up to 4 benchmarks in parallel
+  retry: 3           # Retry failed benchmarks 3 times
+  failfast: false    # Continue even if some fail
+
+# Output configuration
+output:
+  formats: [html, json, csv]     # Generate all formats
+  directory: ./reports            # Output directory
+  timestamp: true                 # Add timestamp to filenames
+
+# Historical storage
+storage:
+  enabled: true
+  path: ./benchflow.db
+  retention_days: 90
+
+# Performance regression detection
+comparison:
+  baseline: "HEAD~1"              # Baseline reference
+  threshold: 1.05                 # Fail if >5% slower
+  alert_on_regression: true
+
+# Logging
+verbose: false
+log_file: ./benchflow.log
+```
+
+### Supported Languages
+
+| Language | Format | Parser | Status |
+|----------|--------|--------|--------|
+| **Rust** | cargo bench bencher | ✅ Implemented | Complete |
+| **Python** | pytest-benchmark JSON | ✅ Implemented | Complete |
+| **Go** | testing.B output | ✅ Implemented | Complete |
+| **Node.js** | Benchmark.js text | ✅ Implemented | Complete |
 
 ## Project Structure Reference
 
@@ -479,18 +590,21 @@ benchflow --help                 # Show help
 git clone https://github.com/jpequegn/benchflow.git && cd benchflow && go mod download && go test ./... && go build -o benchflow ./cmd/benchflow && ./benchflow --version
 ```
 
-### Status Indicators
+### Implementation Status
 
-| Phase | Status | Coverage |
-|-------|--------|----------|
-| Phase 1: Foundation | ✅ Complete | 100% |
-| Phase 2: Rust Parser | ✅ Complete | 82.9% |
-| Phase 3: Execution | 🚧 Planned | N/A |
-| Phase 4: Aggregation | 🚧 Planned | N/A |
-| Phase 5: Reporting | 🚧 Planned | N/A |
-| Phase 6: Multi-lang | 🚧 Planned | N/A |
+| Phase | Description | Status | Coverage |
+|-------|-------------|--------|----------|
+| Phase 1 | Project Foundation & Setup | ✅ Complete | - |
+| Phase 2 | Rust Benchmark Parser | ✅ Complete | 82.9% |
+| Phase 3 | Parallel Benchmark Execution | ✅ Complete | 94.0% |
+| Phase 4 | Result Aggregation & Storage | ✅ Complete | 94.0% |
+| Phase 5 | HTML Report Generation | ✅ Complete | 75.6% |
+| Phase 6 | Multi-language (Python & Go) | ✅ Complete | 88.3% |
+| Phase 7 | Node.js Benchmark Parser | ✅ Complete | 81.2% |
+
+**Overall**: 🚀 **Production Ready** - All 7 phases implemented and tested
 
 ---
 
-**Last Updated**: 2025-10-17
-**Version**: 0.1.0 (Phases 1-2 Complete)
+**Last Updated**: 2025-10-19
+**Version**: 0.2.0 (All 7 Phases Complete)

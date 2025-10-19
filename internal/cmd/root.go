@@ -26,8 +26,8 @@ Supported languages:
   - Rust (cargo bench)
   - Python (pytest-benchmark)
   - Go (testing.B)
-  - Node.js (coming soon)`,
-	Version: "0.1.0",
+  - Node.js (Benchmark.js)`,
+	Version: "0.2.0",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		initLogger()
 	},
