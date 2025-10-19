@@ -1,0 +1,4 @@
+StringComparison x 1,234,567 ops/sec ±1.23% (90 runs sampled)
+ArrayManipulation x 987,654 ops/sec ±2.34% (85 runs sampled)
+ObjectOperations x 5,678,901 ops/sec ±0.56% (95 runs sampled)
+Fastest is ObjectOperations

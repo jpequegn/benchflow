@@ -13,7 +13,7 @@ A unified benchmarking tool that runs, aggregates, and visualizes performance be
 
 ## Goals
 
-- **Multi-language support**: Rust (cargo bench), Python (pytest-benchmark), Go (testing.B), Node.js
+- **Multi-language support**: Rust (cargo bench), Python (pytest-benchmark), Go (testing.B), Node.js, TypeScript (Benchmark.js)
 - **Parallel execution**: Leverage goroutines for concurrent benchmark runs
 - **Unified reporting**: Aggregate results into common format (JSON, CSV, HTML)
 - **Historical tracking**: Track performance trends over time
@@ -84,6 +84,11 @@ benchmarks:
 
   - name: "nodejs-example"
     language: nodejs
+    command: "npm run benchmark"
+    timeout: 2m
+
+  - name: "typescript-example"
+    language: typescript
     command: "npm run benchmark"
     timeout: 2m
 
@@ -257,6 +262,13 @@ go fmt ./... && go vet ./... && go test ./... && go build ./cmd/benchflow
 - ✅ Comprehensive test suite (81.2% coverage)
 - ✅ Integration with executor and full pipeline
 
+### ✅ Phase 8A: TypeScript Benchmark Parser (Complete)
+- ✅ Benchmark.js text format parser (identical to Node.js)
+- ✅ Support for TypeScript benchmarks compiled to JavaScript
+- ✅ Full test coverage matching Node.js parser
+- ✅ Integration with executor registry
+- ✅ Seamless multi-language benchmarking
+
 ## Technology Stack
 
 - **Language**: Go 1.24
@@ -277,7 +289,7 @@ benchflow/
 │   └── benchflow/          # CLI entry point (main.go)
 ├── internal/
 │   ├── cmd/                # CLI commands (cobra)
-│   ├── parser/             # Multi-language benchmark parsers (Rust, Python, Go, Node.js)
+│   ├── parser/             # Multi-language benchmark parsers (Rust, Python, Go, Node.js, TypeScript)
 │   ├── executor/           # Concurrent execution engine with goroutines
 │   ├── aggregator/         # Result aggregation and statistics
 │   ├── reporter/           # HTML/JSON/CSV report generation
@@ -289,7 +301,8 @@ benchflow/
 │   ├── rust/              # Rust benchmark samples
 │   ├── python/            # Python benchmark samples
 │   ├── go/                # Go benchmark samples
-│   └── nodejs/            # Node.js benchmark samples
+│   ├── nodejs/            # Node.js benchmark samples
+│   └── typescript/        # TypeScript benchmark samples
 ├── .github/
 │   └── workflows/          # CI/CD workflows
 └── CLAUDE.md              # Development documentation
@@ -323,6 +336,12 @@ benchflow/
 - Extracts margin of error and sample count
 - Approximates standard deviation from margin of error
 - Handles special characters in benchmark names
+
+**TypeScript** - Benchmark.js text format (identical to Node.js)
+- Parses TypeScript benchmarks compiled to JavaScript
+- Reuses Benchmark.js format and parsing logic
+- Full feature parity with Node.js parser
+- Supports TypeScript-specific benchmark frameworks
 
 ### Parser Interface
 

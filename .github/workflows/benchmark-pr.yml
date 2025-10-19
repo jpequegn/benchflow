@@ -1,0 +1,73 @@
+name: Benchmark (PR)
+
+# Run on pull requests
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'benches/**'
+      - 'tests/**'
+      - 'benchflow.yaml'
+      - '.github/workflows/benchmark-pr.yml'
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    name: Run Performance Benchmarks
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+
+      - name: Setup Rust (if needed)
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+        continue-on-error: true
+
+      - name: Setup Python (if needed)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+        continue-on-error: true
+
+      - name: Setup Node.js (if needed)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+        continue-on-error: true
+
+      - name: Run Performance Benchmarks
+        uses: ./actions/benchmarkflow
+        with:
+          config: ./benchflow.yaml
+          parallel: 4
+          timeout: 10m
+          format: html
+          comment-pr: true
+          detect-regression: true
+          regression-threshold: '1.05'
+          baseline-branch: main
+          upload-artifact: true
+
+      - name: Comment Status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ job.status }}';
+            const statusEmoji = status === 'success' ? '✅' : '❌';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `${statusEmoji} Benchmark job ${status}`
+            });

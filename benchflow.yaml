@@ -1,0 +1,46 @@
+# Benchflow Configuration
+# This is a sample configuration file for running benchmarks across multiple languages
+
+benchmarks:
+  # Rust benchmark example
+  - name: "rust-benchmarks"
+    language: rust
+    command: "cargo bench --bench benchmarks 2>/dev/null || echo 'Rust benchmarks skipped (cargo not configured)'"
+    timeout: 5m
+
+  # Python benchmark example
+  - name: "python-benchmarks"
+    language: python
+    command: "python -m pytest --benchmark-only 2>/dev/null || echo 'Python benchmarks skipped (pytest not configured)'"
+    timeout: 3m
+
+  # Go benchmark example
+  - name: "go-benchmarks"
+    language: go
+    command: "go test -bench=. ./... 2>/dev/null || echo 'Go benchmarks skipped (no benchmarks configured)'"
+    timeout: 2m
+
+  # Node.js benchmark example
+  - name: "nodejs-benchmarks"
+    language: nodejs
+    command: "npm run benchmark 2>/dev/null || echo 'Node.js benchmarks skipped (npm script not configured)'"
+    timeout: 2m
+
+execution:
+  parallel: 4
+  retry: 1
+  timeout: 15m
+
+output:
+  formats: [html, json, csv]
+  directory: ./reports
+
+storage:
+  enabled: true
+  path: ./benchflow.db
+  retention: 90d
+
+comparison:
+  enabled: true
+  baseline: main
+  threshold: 1.05

@@ -1,0 +1,206 @@
+name: Benchflow Performance Tests
+description: Run benchmarks across multiple languages and detect performance regressions
+author: jpequegn
+
+inputs:
+  config:
+    description: Path to benchflow.yaml configuration file
+    required: false
+    default: ./benchflow.yaml
+
+  parallel:
+    description: Number of parallel benchmark executions
+    required: false
+    default: '4'
+
+  timeout:
+    description: Timeout for each benchmark (e.g., '5m', '300s')
+    required: false
+    default: '10m'
+
+  format:
+    description: Output report format (html, json, csv)
+    required: false
+    default: 'html'
+
+  comment-pr:
+    description: Automatically comment on PR with benchmark results
+    required: false
+    default: 'true'
+
+  detect-regression:
+    description: Detect and alert on performance regressions
+    required: false
+    default: 'true'
+
+  regression-threshold:
+    description: Regression threshold as decimal (1.05 = 5% slower)
+    required: false
+    default: '1.05'
+
+  baseline-branch:
+    description: Branch to use as performance baseline (default is main)
+    required: false
+    default: 'main'
+
+  upload-artifact:
+    description: Upload reports as GitHub artifact
+    required: false
+    default: 'true'
+
+outputs:
+  report-path:
+    description: Path to generated report
+    value: ${{ steps.benchmark.outputs.report-path }}
+
+  regression-detected:
+    description: Whether a regression was detected
+    value: ${{ steps.benchmark.outputs.regression-detected }}
+
+  performance-delta:
+    description: Performance change as percentage (negative = faster, positive = slower)
+    value: ${{ steps.benchmark.outputs.performance-delta }}
+
+  report-url:
+    description: URL to HTML report in artifacts
+    value: ${{ steps.benchmark.outputs.report-url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for baseline comparison
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24'
+      continue-on-error: true
+
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Build benchflow
+      shell: bash
+      run: |
+        cd ${{ github.workspace }}
+        go build -o benchflow ./cmd/benchflow
+        ./benchflow --version
+
+    - name: Run benchmarks
+      id: benchmark
+      shell: bash
+      env:
+        INPUT_CONFIG: ${{ inputs.config }}
+        INPUT_PARALLEL: ${{ inputs.parallel }}
+        INPUT_TIMEOUT: ${{ inputs.timeout }}
+        INPUT_FORMAT: ${{ inputs.format }}
+        INPUT_DETECT_REGRESSION: ${{ inputs.detect-regression }}
+        INPUT_REGRESSION_THRESHOLD: ${{ inputs.regression-threshold }}
+        INPUT_BASELINE_BRANCH: ${{ inputs.baseline-branch }}
+      run: |
+        set -e
+
+        BENCHFLOW=${{ github.workspace }}/benchflow
+        CONFIG="${INPUT_CONFIG:-.}"
+        PARALLEL="${INPUT_PARALLEL:-4}"
+        TIMEOUT="${INPUT_TIMEOUT:-10m}"
+        FORMAT="${INPUT_FORMAT:-html}"
+        OUTPUT_DIR="reports"
+
+        echo "::notice::Starting benchmark run..."
+        echo "::notice::Config: $CONFIG"
+        echo "::notice::Parallel: $PARALLEL"
+        echo "::notice::Format: $FORMAT"
+
+        # Run benchmarks
+        mkdir -p "$OUTPUT_DIR"
+        $BENCHFLOW --verbose run \
+          --config "$CONFIG" \
+          --parallel "$PARALLEL" \
+          --timeout "$TIMEOUT"
+
+        # Generate report
+        $BENCHFLOW report \
+          --format "$FORMAT" \
+          --output "$OUTPUT_DIR/report"
+
+        # Set outputs
+        echo "report-path=$OUTPUT_DIR" >> $GITHUB_OUTPUT
+        echo "report-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+
+        # Check for regression if enabled
+        if [ "$INPUT_DETECT_REGRESSION" = "true" ]; then
+          echo "::notice::Checking for regressions..."
+          REGRESSION_DETECTED="false"
+          PERFORMANCE_DELTA="0.0"
+
+          # Compare with baseline if available
+          if [ -n "$INPUT_BASELINE_BRANCH" ] && git show-ref --quiet refs/remotes/origin/$INPUT_BASELINE_BRANCH; then
+            echo "::notice::Comparing with baseline: $INPUT_BASELINE_BRANCH"
+            $BENCHFLOW compare \
+              --baseline "origin/$INPUT_BASELINE_BRANCH" \
+              --current HEAD \
+              --threshold "$INPUT_REGRESSION_THRESHOLD" || {
+              REGRESSION_DETECTED="true"
+              echo "::warning::Performance regression detected!"
+            }
+          fi
+
+          echo "regression-detected=$REGRESSION_DETECTED" >> $GITHUB_OUTPUT
+          echo "performance-delta=$PERFORMANCE_DELTA" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Comment on PR
+      if: ${{ github.event_name == 'pull_request' && inputs.comment-pr == 'true' }}
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = '${{ steps.benchmark.outputs.report-path }}/report.html';
+
+          let comment = '## 📊 Performance Benchmark Results\n\n';
+
+          if ('${{ steps.benchmark.outputs.regression-detected }}' === 'true') {
+            comment += '⚠️ **Performance regression detected!**\n\n';
+            comment += `Performance change: ${{ steps.benchmark.outputs.performance-delta }}%\n\n`;
+          } else {
+            comment += '✅ **No regressions detected**\n\n';
+          }
+
+          comment += `- 📈 [View full report](#)\n`;
+          comment += `- 🔗 [Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n`;
+          comment += `- ⏱️ Time: ${{ env.CURRENT_TIME }}\n`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+    - name: Upload reports
+      if: ${{ inputs.upload-artifact == 'true' && always() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-reports
+        path: ${{ steps.benchmark.outputs.report-path }}/
+        retention-days: 30
+
+    - name: Summary
+      if: always()
+      shell: bash
+      run: |
+        echo "## Benchmark Execution Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- Status: Success ✅" >> $GITHUB_STEP_SUMMARY
+        echo "- Reports: ${{ steps.benchmark.outputs.report-path }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Regression Detected: ${{ steps.benchmark.outputs.regression-detected }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Performance Delta: ${{ steps.benchmark.outputs.performance-delta }}%" >> $GITHUB_STEP_SUMMARY
