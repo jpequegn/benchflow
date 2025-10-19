@@ -69,6 +69,11 @@ func (s *SQLiteStorage) Init() error {
 		return fmt.Errorf("failed to create schema: %w", err)
 	}
 
+	// Initialize comparison history tables
+	if err := s.InitComparisonHistory(); err != nil {
+		return fmt.Errorf("failed to init comparison history: %w", err)
+	}
+
 	return nil
 }
 
