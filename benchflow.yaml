@@ -2,29 +2,32 @@
 # This is a sample configuration file for running benchmarks across multiple languages
 
 benchmarks:
-  # Rust benchmark example
-  - name: "rust-benchmarks"
-    language: rust
-    command: "cargo bench --bench benchmarks 2>/dev/null || echo 'Rust benchmarks skipped (cargo not configured)'"
-    timeout: 5m
-
-  # Python benchmark example
-  - name: "python-benchmarks"
-    language: python
-    command: "python -m pytest --benchmark-only 2>/dev/null || echo 'Python benchmarks skipped (pytest not configured)'"
-    timeout: 3m
-
-  # Go benchmark example
-  - name: "go-benchmarks"
-    language: go
-    command: "go test -bench=. ./... 2>/dev/null || echo 'Go benchmarks skipped (no benchmarks configured)'"
-    timeout: 2m
-
-  # Node.js benchmark example
-  - name: "nodejs-benchmarks"
-    language: nodejs
-    command: "npm run benchmark 2>/dev/null || echo 'Node.js benchmarks skipped (npm script not configured)'"
-    timeout: 2m
+  # NOTE: Benchmarks can be added here with project-specific configurations.
+  # Examples of benchmark configurations:
+  #
+  # Rust benchmark example (using cargo bench):
+  #   - name: "rust-benchmarks"
+  #     language: rust
+  #     command: "cargo bench --bench benchmarks"
+  #     timeout: 5m
+  #
+  # Python benchmark example (using pytest-benchmark):
+  #   - name: "python-benchmarks"
+  #     language: python
+  #     command: "python -m pytest --benchmark-only"
+  #     timeout: 3m
+  #
+  # Go benchmark example (using testing.B):
+  #   - name: "go-benchmarks"
+  #     language: go
+  #     command: "go test -bench=. ./..."
+  #     timeout: 2m
+  #
+  # Node.js/TypeScript benchmark example (using Benchmark.js):
+  #   - name: "nodejs-benchmarks"
+  #     language: nodejs
+  #     command: "npm run benchmark"
+  #     timeout: 2m
 
 execution:
   parallel: 4
