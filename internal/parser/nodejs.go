@@ -158,39 +158,3 @@ func (p *NodeJSParser) Parse(output []byte) (*BenchmarkSuite, error) {
 
 	return suite, nil
 }
-
-// approximateStdDev approximates standard deviation from margin of error and mean
-// This is a simplified approximation since Benchmark.js doesn't provide exact stddev
-func approximateStdDev(marginOfError float64, mean float64) float64 {
-	// RME (Relative Margin of Error) ≈ 1.96 * StdErr / mean
-	// Solving for StdDev: StdDev ≈ (RME * mean) / 1.96
-	if marginOfError == 0 {
-		return 0
-	}
-	return (marginOfError / 100.0) * mean / 1.96
-}
-
-// validateBenchmarkResult validates a benchmark result for correctness
-func validateBenchmarkResult(result *BenchmarkResult) error {
-	if result.Name == "" {
-		return fmt.Errorf("benchmark name cannot be empty")
-	}
-
-	if result.Time < 0 {
-		return fmt.Errorf("time cannot be negative")
-	}
-
-	if result.StdDev < 0 {
-		return fmt.Errorf("standard deviation cannot be negative")
-	}
-
-	if result.Iterations <= 0 {
-		return fmt.Errorf("iterations must be positive")
-	}
-
-	if result.Throughput != nil && result.Throughput.Value <= 0 {
-		return fmt.Errorf("throughput value must be positive")
-	}
-
-	return nil
-}

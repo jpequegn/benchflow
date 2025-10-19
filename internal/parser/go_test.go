@@ -109,15 +109,15 @@ func TestGoParser_Parse_FromFile(t *testing.T) {
 
 func TestGoParser_Parse_EdgeCases(t *testing.T) {
 	tests := []struct {
-		name              string
-		input             string
-		wantResults       int
-		wantErr           bool
-		wantName          string
-		wantTime          time.Duration
-		wantIterations    int64
-		wantBytesPerOp    string
-		wantAllocsPerOp   string
+		name            string
+		input           string
+		wantResults     int
+		wantErr         bool
+		wantName        string
+		wantTime        time.Duration
+		wantIterations  int64
+		wantBytesPerOp  string
+		wantAllocsPerOp string
 	}{
 		{
 			name: "zero allocations",
