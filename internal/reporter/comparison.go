@@ -228,21 +228,21 @@ func (bcr *BasicComparisonReporter) GenerateJSON(result *comparator.ComparisonRe
 	// Create a JSON-serializable structure
 	jsonData := map[string]interface{}{
 		"summary": map[string]interface{}{
-			"total_comparisons":  result.Summary.TotalComparisons,
-			"regressions":        result.Summary.Regressions,
-			"improvements":       result.Summary.Improvements,
-			"average_delta":      result.Summary.AverageDelta,
-			"max_delta":          result.Summary.MaxDelta,
-			"min_delta":          result.Summary.MinDelta,
+			"total_comparisons":   result.Summary.TotalComparisons,
+			"regressions":         result.Summary.Regressions,
+			"improvements":        result.Summary.Improvements,
+			"average_delta":       result.Summary.AverageDelta,
+			"max_delta":           result.Summary.MaxDelta,
+			"min_delta":           result.Summary.MinDelta,
 			"significant_changes": result.Summary.SignificantChanges,
 		},
-		"regressions": result.Regressions,
+		"regressions":  result.Regressions,
 		"improvements": result.Improvements,
-		"benchmarks": bcr.marshalBenchmarkComparisons(result.Benchmarks),
+		"benchmarks":   bcr.marshalBenchmarkComparisons(result.Benchmarks),
 		"statistics": map[string]interface{}{
-			"confidence_level":      result.Statistics.ConfidenceLevel,
-			"significance_level":    result.Statistics.SignificanceLevel,
-			"regression_threshold":  result.Statistics.RegressionThreshold,
+			"confidence_level":     result.Statistics.ConfidenceLevel,
+			"significance_level":   result.Statistics.SignificanceLevel,
+			"regression_threshold": result.Statistics.RegressionThreshold,
 		},
 	}
 
@@ -261,17 +261,17 @@ func (bcr *BasicComparisonReporter) marshalBenchmarkComparisons(comparisons []*c
 
 	for _, comp := range comparisons {
 		results = append(results, map[string]interface{}{
-			"name":                  comp.Name,
-			"language":              comp.Language,
-			"baseline_time_ns":      comp.Baseline.Time.Nanoseconds(),
-			"current_time_ns":       comp.Current.Time.Nanoseconds(),
-			"time_delta_percent":    comp.TimeDelta,
-			"is_regression":         comp.IsRegression,
-			"is_significant":        comp.IsSignificant,
-			"confidence_level":      comp.ConfidenceLevel,
-			"t_test_p_value":        comp.TTestPValue,
-			"effect_size_cohens_d":  comp.EffectSize,
-			"regression_threshold":  comp.RegressionThreshold,
+			"name":                 comp.Name,
+			"language":             comp.Language,
+			"baseline_time_ns":     comp.Baseline.Time.Nanoseconds(),
+			"current_time_ns":      comp.Current.Time.Nanoseconds(),
+			"time_delta_percent":   comp.TimeDelta,
+			"is_regression":        comp.IsRegression,
+			"is_significant":       comp.IsSignificant,
+			"confidence_level":     comp.ConfidenceLevel,
+			"t_test_p_value":       comp.TTestPValue,
+			"effect_size_cohens_d": comp.EffectSize,
+			"regression_threshold": comp.RegressionThreshold,
 		})
 	}
 

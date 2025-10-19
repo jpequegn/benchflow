@@ -42,11 +42,11 @@ func createTestComparisonResult() *comparator.ComparisonResult {
 		},
 		Summary: comparator.ComparisonSummary{
 			TotalComparisons:   2,
-			Regressions:       1,
-			Improvements:      1,
-			AverageDelta:      7.5,
-			MaxDelta:          20.0,
-			MinDelta:          -5.0,
+			Regressions:        1,
+			Improvements:       1,
+			AverageDelta:       7.5,
+			MaxDelta:           20.0,
+			MinDelta:           -5.0,
 			SignificantChanges: 2,
 		},
 		Regressions:  []string{"search"},
@@ -298,10 +298,10 @@ func TestGenerateMarkdownTable(t *testing.T) {
 	reporter := NewBasicComparisonReporter()
 	comparisons := []*comparator.BenchmarkComparison{
 		{
-			Name:     "benchmark1",
-			Language: "go",
-			Baseline: &parser.BenchmarkResult{Time: 1000 * time.Nanosecond},
-			Current:  &parser.BenchmarkResult{Time: 950 * time.Nanosecond},
+			Name:      "benchmark1",
+			Language:  "go",
+			Baseline:  &parser.BenchmarkResult{Time: 1000 * time.Nanosecond},
+			Current:   &parser.BenchmarkResult{Time: 950 * time.Nanosecond},
 			TimeDelta: -5.0,
 		},
 	}
@@ -325,15 +325,15 @@ func TestMarshalBenchmarkComparisons(t *testing.T) {
 	reporter := NewBasicComparisonReporter()
 	comparisons := []*comparator.BenchmarkComparison{
 		{
-			Name:              "test",
-			Language:          "rust",
-			Baseline:          &parser.BenchmarkResult{Time: 1000 * time.Nanosecond},
-			Current:           &parser.BenchmarkResult{Time: 1100 * time.Nanosecond},
-			TimeDelta:         10.0,
-			IsRegression:      true,
-			IsSignificant:     true,
-			TTestPValue:       0.01,
-			EffectSize:        0.5,
+			Name:                "test",
+			Language:            "rust",
+			Baseline:            &parser.BenchmarkResult{Time: 1000 * time.Nanosecond},
+			Current:             &parser.BenchmarkResult{Time: 1100 * time.Nanosecond},
+			TimeDelta:           10.0,
+			IsRegression:        true,
+			IsSignificant:       true,
+			TTestPValue:         0.01,
+			EffectSize:          0.5,
 			RegressionThreshold: 1.05,
 		},
 	}

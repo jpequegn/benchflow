@@ -97,7 +97,7 @@ func TestGetComparisonHistory(t *testing.T) {
 						Time: 1000 * time.Nanosecond,
 					},
 					Current: &parser.BenchmarkResult{
-						Time: time.Duration((1000+50*i)) * time.Nanosecond,
+						Time: time.Duration((1000 + 50*i)) * time.Nanosecond,
 					},
 					TimeDelta: float64(5 * i),
 				},

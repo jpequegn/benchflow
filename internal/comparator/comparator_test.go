@@ -471,15 +471,15 @@ func TestCohensDEffect_EmptyInput(t *testing.T) {
 func TestNormalCDF(t *testing.T) {
 	// Test known values
 	tests := []struct {
-		x        float64
-		expected float64
+		x         float64
+		expected  float64
 		tolerance float64
 	}{
-		{0, 0.5, 0.01},     // CDF(0) = 0.5
-		{1, 0.84, 0.01},    // CDF(1) ≈ 0.84
-		{-1, 0.16, 0.01},   // CDF(-1) ≈ 0.16
-		{2, 0.98, 0.01},    // CDF(2) ≈ 0.98
-		{-2, 0.02, 0.01},   // CDF(-2) ≈ 0.02
+		{0, 0.5, 0.01},   // CDF(0) = 0.5
+		{1, 0.84, 0.01},  // CDF(1) ≈ 0.84
+		{-1, 0.16, 0.01}, // CDF(-1) ≈ 0.16
+		{2, 0.98, 0.01},  // CDF(2) ≈ 0.98
+		{-2, 0.02, 0.01}, // CDF(-2) ≈ 0.02
 	}
 
 	for _, tt := range tests {

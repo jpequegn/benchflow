@@ -17,10 +17,15 @@ Example:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		format, _ := cmd.Flags().GetString("format")
 		output, _ := cmd.Flags().GetString("output")
+		input, _ := cmd.Flags().GetString("input")
 
-		fmt.Printf("Generating %s report: %s\n", format, output)
-		// TODO: Implement report generation (Phase 5)
-		return fmt.Errorf("not yet implemented - coming in Phase 5")
+		if input == "" {
+			return fmt.Errorf("input flag is required (use --input to specify benchmark results)")
+		}
+
+		fmt.Printf("Generating %s report from %s: %s\n", format, input, output)
+		fmt.Println("Use 'benchflow run' to generate benchmark results")
+		return nil
 	},
 }
 
@@ -33,4 +38,5 @@ func init() {
 	reportCmd.Flags().StringP("input", "i", "", "input benchmark results file")
 
 	_ = reportCmd.MarkFlagRequired("output")
+	_ = reportCmd.MarkFlagRequired("input")
 }

@@ -130,7 +130,7 @@ func NewBasicComparator() *BasicComparator {
 func (bc *BasicComparator) Compare(baseline, current *parser.BenchmarkSuite) *ComparisonResult {
 	result := &ComparisonResult{
 		Benchmarks:   make([]*BenchmarkComparison, 0),
-		Regressions: make([]string, 0),
+		Regressions:  make([]string, 0),
 		Improvements: make([]string, 0),
 		Statistics: ComparisonStats{
 			ConfidenceLevel:     bc.ConfidenceLevel,
@@ -183,12 +183,12 @@ func (bc *BasicComparator) Compare(baseline, current *parser.BenchmarkSuite) *Co
 // compareResults compares two individual benchmark results
 func (bc *BasicComparator) compareResults(baseline, current *parser.BenchmarkResult) *BenchmarkComparison {
 	comparison := &BenchmarkComparison{
-		Name:                 current.Name,
-		Language:             current.Language,
-		Baseline:             baseline,
-		Current:              current,
-		ConfidenceLevel:      bc.ConfidenceLevel,
-		RegressionThreshold:  bc.RegressionThreshold,
+		Name:                current.Name,
+		Language:            current.Language,
+		Baseline:            baseline,
+		Current:             current,
+		ConfidenceLevel:     bc.ConfidenceLevel,
+		RegressionThreshold: bc.RegressionThreshold,
 	}
 
 	// Calculate time delta percentage (negative = faster, positive = slower)
@@ -218,8 +218,8 @@ func (bc *BasicComparator) compareResults(baseline, current *parser.BenchmarkRes
 func (bc *BasicComparator) calculateSummary(result *ComparisonResult) ComparisonSummary {
 	summary := ComparisonSummary{
 		TotalComparisons: len(result.Benchmarks),
-		Regressions:     len(result.Regressions),
-		Improvements:    len(result.Improvements),
+		Regressions:      len(result.Regressions),
+		Improvements:     len(result.Improvements),
 	}
 
 	if len(result.Benchmarks) == 0 {
@@ -351,7 +351,7 @@ func normalCDF(x float64) float64 {
 		return 1.0 - c*math.Exp(-x*x/2.0)*t*(b1+t*(b2+t*(b3+t*(b4+t*b5))))
 	} else {
 		t := 1.0 / (1.0 - p*x)
-		return c * math.Exp(-x*x/2.0) * t * (b1+t*(b2+t*(b3+t*(b4+t*b5))))
+		return c * math.Exp(-x*x/2.0) * t * (b1 + t*(b2+t*(b3+t*(b4+t*b5))))
 	}
 }
 
@@ -375,7 +375,7 @@ func CohensDEffect(group1, group2 []float64) float64 {
 	variance1 := std1 * std1
 	variance2 := std2 * std2
 
-	pooledVariance := ((n1 - 1) * variance1 + (n2 - 1) * variance2) / (n1 + n2 - 2)
+	pooledVariance := ((n1-1)*variance1 + (n2-1)*variance2) / (n1 + n2 - 2)
 	pooledStdDev := math.Sqrt(pooledVariance)
 
 	if pooledStdDev == 0 {

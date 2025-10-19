@@ -103,18 +103,18 @@ func (bta *BasicTrendAnalyzer) CalculateTrend(history []*HistoricalComparison, m
 	}
 
 	return &TrendResult{
-		BenchmarkName:   sorted[0].BenchmarkName,
-		Language:        sorted[0].Language,
-		Direction:       direction,
-		Slope:           slope,
-		RSquared:        rSquared,
-		ChangePercent:   changePercent,
-		PeriodDays:      periodDays,
-		DataPoints:      len(sorted),
-		StartTime:       startTime,
-		EndTime:         endTime,
-		StartValue:      startValue,
-		EndValue:        endValue,
+		BenchmarkName: sorted[0].BenchmarkName,
+		Language:      sorted[0].Language,
+		Direction:     direction,
+		Slope:         slope,
+		RSquared:      rSquared,
+		ChangePercent: changePercent,
+		PeriodDays:    periodDays,
+		DataPoints:    len(sorted),
+		StartTime:     startTime,
+		EndTime:       endTime,
+		StartValue:    startValue,
+		EndValue:      endValue,
 	}, nil
 }
 

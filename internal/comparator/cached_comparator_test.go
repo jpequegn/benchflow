@@ -136,7 +136,7 @@ func TestCachedComparator_LRUEviction(t *testing.T) {
 				{
 					Name:     "sort",
 					Language: "go",
-					Time:     time.Duration((1000+i*100)) * time.Nanosecond,
+					Time:     time.Duration((1000 + i*100)) * time.Nanosecond,
 					StdDev:   50 * time.Nanosecond,
 				},
 			},
@@ -147,7 +147,7 @@ func TestCachedComparator_LRUEviction(t *testing.T) {
 				{
 					Name:     "sort",
 					Language: "go",
-					Time:     time.Duration((950+i*100)) * time.Nanosecond,
+					Time:     time.Duration((950 + i*100)) * time.Nanosecond,
 					StdDev:   45 * time.Nanosecond,
 				},
 			},
